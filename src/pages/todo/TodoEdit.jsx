@@ -10,37 +10,30 @@ import {
 } from '@material-tailwind/react';
 import { Formik } from 'formik';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import * as Yup from 'yup';
-import { addTodo } from './todoSlice';
-import { nanoid } from '@reduxjs/toolkit';
-import { useNavigate } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router';
+import { todoSchema } from './TodoAdd';
+import { updateTodo } from './todoSlice';
 
-export const todoSchema = Yup.object({
-  // email: Yup.string().matches(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'please provide valid email').max(200).required(),
-  title: Yup.string().max(200).required(),
-  location: Yup.string().required(),
-  colors: Yup.array().min(1).required(),
-  country: Yup.string().required(),
-  description: Yup.string().min(10).max(500).required(),
-});
+export default function TodoEdit() {
+  const { todos } = useSelector((state) => state.todoSlice);
 
-export default function TodoAdd() {
+  const { id } = useParams();
+  const todo = todos.find((todo) => todo.id === id);
   const dispatch = useDispatch();
   const nav = useNavigate();
   return (
     <div>
       <Formik
         initialValues={{
-          // email: '',
-          title: '',
-          location: '',
-          colors: [],
-          country: '',
-          description: '',
+          title: todo.title,
+          location: todo.location,
+          colors: todo.colors,
+          country: todo.country,
+          description: todo.description,
         }}
         onSubmit={(val) => {
-          dispatch(addTodo({ ...val, id: nanoid() }));
+          dispatch(updateTodo({ ...val, id: todo.id }));
           nav(-1);
         }}
         validationSchema={todoSchema}
@@ -55,15 +48,6 @@ export default function TodoAdd() {
         }) => {
           return (
             <form onSubmit={handleSubmit} className='max-w-[400px] space-y-5'>
-              {/* <div>
-              <Input
-                value={values.email}
-                onChange={handleChange}
-                label='Email' name='email' />
-              {errors.email && touched.email && <h1 className='text-pink-400'>{errors.email}</h1>}
-
-            </div> */}
-
               <div>
                 <Input
                   value={values.title}
@@ -85,6 +69,7 @@ export default function TodoAdd() {
                     name='location'
                     value={'Indoor'}
                     label='Indoor'
+                    checked={values.location === 'Indoor'}
                   />
                   <Radio
                     color='amber'
@@ -92,6 +77,7 @@ export default function TodoAdd() {
                     name='location'
                     value={'Outdoor'}
                     label='Outdoor'
+                    checked={values.location === 'Outdoor'}
                   />
                 </div>
                 {errors.location && touched.location && (
@@ -108,6 +94,7 @@ export default function TodoAdd() {
                     onChange={handleChange}
                     color='blue'
                     value={'blue'}
+                    checked={values.colors.includes('blue')}
                   />
                   <Checkbox
                     name='colors'
@@ -115,6 +102,7 @@ export default function TodoAdd() {
                     onChange={handleChange}
                     color='red'
                     value={'red'}
+                    checked={values.colors.includes('red')}
                   />
                   <Checkbox
                     name='colors'
@@ -122,6 +110,7 @@ export default function TodoAdd() {
                     label='Green'
                     color='green'
                     value={'green'}
+                    checked={values.colors.includes('green')}
                   />
                 </div>
                 {errors.colors && touched.colors && (
@@ -133,6 +122,7 @@ export default function TodoAdd() {
                 <div className='space-y-2'>
                   <Typography variant='h6'>Select your Country</Typography>
                   <Select
+                    value={values.country}
                     onChange={(e) => setFieldValue('country', e)}
                     label='Select Country'
                     name='country'
