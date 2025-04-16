@@ -18,9 +18,9 @@ export default function TodoPage() {
         })}
       </div>
 
-      {posts.map((post, i) => {
+      {posts.map((post) => {
         return (
-          <div key={i}>
+          <div key={post.id}>
             <h1>{post.title}</h1>
             <p>{post.detail}</p>
           </div>

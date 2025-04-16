@@ -25,18 +25,10 @@ export function OpenDialog({ index }) {
       <IconButton onClick={handleOpen} color='pink' size='sm'>
         <i className='fas fa-trash' />
       </IconButton>
-      <Dialog
-        size='sm'
-        // className="bg-white/30 backdrop-invert backdrop-opacity-95"
-        open={open}
-        handler={handleOpen}
-      >
-        <DialogHeader>Its a simple dialog.</DialogHeader>
+      <Dialog size='sm' open={open} handler={handleOpen}>
+        <DialogHeader>Are you sure?</DialogHeader>
         <DialogBody>
-          The key to more success is to have a lot of pillows. Put it this way,
-          it took me twenty five years to get these plants, twenty five years of
-          blood sweat and tears, and I&apos;m never giving up, I&apos;m just
-          getting started. I&apos;m up to something. Fan luv.
+          Click on 'CONFIRM' to permanently delete this file
         </DialogBody>
         <DialogFooter>
           <Button

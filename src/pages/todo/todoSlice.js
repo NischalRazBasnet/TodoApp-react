@@ -27,7 +27,7 @@ export const todoSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(reset, (state, action) => {
-      state.todos = [];
+      setToLocal((state.todos = []));
     });
   },
 });

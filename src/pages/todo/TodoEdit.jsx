@@ -34,7 +34,6 @@ export default function TodoEdit() {
         }}
         onSubmit={(val) => {
           dispatch(updateTodo({ ...val, id: todo.id }));
-          nav(-1);
         }}
         validationSchema={todoSchema}
       >
