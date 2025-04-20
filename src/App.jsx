@@ -5,6 +5,7 @@ import TodoPage from './pages/todo/TodoPage';
 import { RouterProvider } from 'react-router-dom';
 import TodoAdd from './pages/todo/TodoAdd';
 import TodoEdit from './pages/todo/TodoEdit';
+import HomePage from './pages/home/HomePage';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -14,7 +15,7 @@ export default function App() {
       children: [
         {
           index: true,
-          element: <TodoPage />,
+          element: <HomePage />,
         },
         {
           path: 'add-todo',
