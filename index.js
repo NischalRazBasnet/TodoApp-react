@@ -1,26 +1,46 @@
 import express from 'express';
 import morgan from 'morgan';
 import productRoutes from './routes/productRoutes.js';
+import mongoose from 'mongoose';
+import fileUpload from 'express-fileupload';
 
 const app = express();
 
-// middleware
+//data base connect
+
+mongoose
+  .connect(
+    'mongodb+srv://nischalbasnet7848:Password@cluster0.pzmrcz4.mongodb.net/'
+  )
+  .then((val) => {
+    app.listen(5000, () => {
+      console.log('database connected and server is listening');
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+//middleware
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(
+  fileUpload({
+    limits: { fileSize: 5 * 1024 * 1024 },
+    abortOnLimit: true,
+  })
+);
+
+app.use(express.static('uploads'));
 
 app.get('/', (req, res) => {
-  const { q } = req.query;
-  const toNumber = Number(q);
-  console.log(q);
-  if (toNumber % 2 === 0) {
-    console.log('number is even');
-  } else {
-    console.log('number is odd');
-  }
   return res.status(200).json({
     message: 'Welcome to Backened',
-    numbers: [11, 22, 33, 44, 55],
   });
 });
 
 app.use(productRoutes);
+
+//path define file
+//response dine logic
+// model banaune
