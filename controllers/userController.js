@@ -1,3 +1,6 @@
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -7,5 +10,13 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
   try {
-  } catch (err) {}
+    const isExist = await User.findOne({ email: email });
+    if (isExist)
+      return res.status(409).json({ message: 'Email Already Exist' });
+    const hashPass = bcrypt.hashSync(password, 10);
+    await User.create({ username, email, password: hashPass });
+    return res.status(200).json({ message: 'User Registered Successfully' });
+  } catch (err) {
+    return res.status(400).json({ message: `${err}` });
+  }
 };

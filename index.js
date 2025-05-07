@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import productRoutes from './routes/productRoutes.js';
-// import userRoutes from './routes/userRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
 // import cors from 'cors';
@@ -9,7 +9,6 @@ import fileUpload from 'express-fileupload';
 const app = express();
 
 //data base connect
-
 mongoose
   .connect(
     'mongodb+srv://nischalbasnet7848:Password@cluster0.pzmrcz4.mongodb.net/Shopify'
@@ -43,8 +42,4 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', productRoutes);
-// app.use('/api/users', userRoutes);
-
-//path define file
-//response dine logic
-// model banaune
+app.use('/api/users', userRoutes);
