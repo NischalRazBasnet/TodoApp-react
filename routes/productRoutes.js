@@ -8,23 +8,24 @@ import {
   updateProduct,
 } from '../controllers/productController.js';
 import { notAllowed } from '../utils/shareFunc.js';
-import { fileCheck } from '../middlewares/checkFiles.js';
+import { fileCheck, updateFileCheck } from '../middlewares/checkFiles.js';
 import { checkId } from '../middlewares/checkId.js';
+import { productValSchema, validates } from '../utils/validator.js';
 
 const router = express.Router();
 
 router
-  .route('/products')
+  .route('/')
   .get(getProducts)
-  .post(fileCheck, addProduct)
+  .post(fileCheck, validates.body(productValSchema), addProduct)
   .all(notAllowed);
 
-router.route('/products/top-5').get(getTop5, getProducts).all(notAllowed);
+router.route('/top-5').get(getTop5, getProducts).all(notAllowed);
 
 router
-  .route('/produts/:id')
+  .route('/:id')
   .get(getProduct)
-  .patch(checkId, updateProduct)
+  .patch(checkId, updateFileCheck, updateProduct)
   .delete(checkId, removeProduct)
   .all(notAllowed);
 

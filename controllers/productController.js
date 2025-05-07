@@ -1,6 +1,5 @@
 import Product, { brands, categories } from '../models/Products.js';
 import fs from 'fs';
-import mongoose from 'mongoose';
 
 export const getTop5 = (req, res, next) => {
   req.query.rating = { $gt: 4.5 };
@@ -15,11 +14,6 @@ export const getProducts = async (req, res) => {
 
     excludeFields.forEach((label) => delete queryObject[label]);
 
-    // let qryStr = JSON.stringify(queryObject);
-    // // Replace "gt", "gte", "lt", "lte", "eq" inside the keys
-    // qryStr = qryStr.replace(/\[(gte|gt|lte|lt|eq)\]/g, (_, operator) => `":{"$${operator}":`);
-
-    // console.log(qryStr);
     console.log(req.query);
 
     let query = Product.find(queryObject);
@@ -55,7 +49,10 @@ export const getProducts = async (req, res) => {
     const limit = req.query.limit || 10;
     const skip = (page - 1) * 10;
 
-    const products = await query.skip(skip).limit(limit);
+    const products = await query
+      .skip(skip)
+      .limit(limit)
+      .select('title rating price image');
 
     return res.status(200).json(products);
   } catch (err) {
@@ -86,21 +83,38 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const updateProduct = (req, res) => {
-  return res.status(200).json({ message: 'addProducts' });
+export const updateProduct = async (req, res) => {
+  const product = req.product;
+  const { title, description, price, category, brand } = req.body;
+  try {
+    product.title = title || product.title;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    product.brand = brand || product.brand;
+
+    if (req.image) {
+      fs.unlink(`./upload${product.image}`, async (err) => {
+        product.image = req.image;
+        await product.save();
+      });
+    }
+    await product.save();
+
+    return res.status(200).json({ message: 'product updated successfully' });
+  } catch (err) {
+    fs.unlink(`./uploads${req.image}`, (imageErr) => {
+      return res.status(400).json({ message: `${err}` });
+    });
+  }
 };
 
 export const removeProduct = async (req, res) => {
-  const { id } = req.params;
+  const product = req.product;
   try {
-    if (!mongoose.isValidObjectId(id))
-      return res.status(400).json({ message: 'invalid product id' });
-
-    const isExist = await Product.findById(id);
-    if (!isExist) return res.status(404).json({ message: 'product not found' });
-    fs.unlink(`./uploads${isExist.image}`, async (imageErr) => {
+    fs.unlink(`./uploads${product.image}`, async (imageErr) => {
       if (imageErr) return res.status(400).json({ message: `${imageErr}` });
-      await Product.findByIdAndDelete(id);
+      await Product.findByIdAndDelete(product._id);
     });
     return res.status(200).json({ message: 'product removed successfully' });
   } catch (err) {

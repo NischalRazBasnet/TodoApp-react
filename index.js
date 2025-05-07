@@ -1,10 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
 import productRoutes from './routes/productRoutes.js';
-import userRoutes from './routes/userRoutes.js';
+// import userRoutes from './routes/userRoutes.js';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
-import cors from 'cors';
+// import cors from 'cors';
 
 const app = express();
 
@@ -24,7 +24,7 @@ mongoose
   });
 
 //middleware
-app.use(cors());
+// app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(
@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
+// app.use('/api/users', userRoutes);
 
 //path define file
 //response dine logic
