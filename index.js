@@ -1,8 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
+import cors from 'cors';
 
 const app = express();
 
@@ -10,7 +12,7 @@ const app = express();
 
 mongoose
   .connect(
-    'mongodb+srv://nischalbasnet7848:Password@cluster0.pzmrcz4.mongodb.net/'
+    'mongodb+srv://nischalbasnet7848:Password@cluster0.pzmrcz4.mongodb.net/Shopify'
   )
   .then((val) => {
     app.listen(5000, () => {
@@ -22,6 +24,7 @@ mongoose
   });
 
 //middleware
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(
@@ -39,7 +42,8 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use(productRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 //path define file
 //response dine logic

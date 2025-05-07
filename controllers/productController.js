@@ -91,11 +91,16 @@ export const updateProduct = (req, res) => {
 };
 
 export const removeProduct = async (req, res) => {
-  const product = req.product;
+  const { id } = req.params;
   try {
-    fs.unlink(`./uploads${product.image}`, async (imageErr) => {
+    if (!mongoose.isValidObjectId(id))
+      return res.status(400).json({ message: 'invalid product id' });
+
+    const isExist = await Product.findById(id);
+    if (!isExist) return res.status(404).json({ message: 'product not found' });
+    fs.unlink(`./uploads${isExist.image}`, async (imageErr) => {
       if (imageErr) return res.status(400).json({ message: `${imageErr}` });
-      await Product.findByIdAndDelete(product._id);
+      await Product.findByIdAndDelete(id);
     });
     return res.status(200).json({ message: 'product removed successfully' });
   } catch (err) {
