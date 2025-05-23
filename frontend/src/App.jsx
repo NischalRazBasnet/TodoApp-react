@@ -4,7 +4,7 @@ import RootLayout from './components/RootLayout';
 import { RouterProvider } from 'react-router-dom';
 import Login from './features/authentication/login';
 import SignUp from './features/authentication/SignUp';
-import ProductList from './features/products/ProductList';
+import HomePage from './features/home/HomePage';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -12,12 +12,12 @@ export default function App() {
       path: '/',
       element: <RootLayout />,
       children: [
-        // {
-        //   index: true,
-        //   element: <ProductList />,
-        // },
         {
           index: true,
+          element: <HomePage />,
+        },
+        {
+          path: '/login',
           element: <Login />,
         },
         {
@@ -27,5 +27,9 @@ export default function App() {
       ],
     },
   ]);
-  return <RouterProvider router={router} />;
+  return (
+    <div className='mx-auto max-w-[1700px]'>
+      <RouterProvider router={router} />;
+    </div>
+  );
 }
